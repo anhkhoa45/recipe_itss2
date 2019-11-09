@@ -12,7 +12,7 @@
             <a href="#" class="post-tag"><%= @recipe.category.name %></a>
             <h4 class="post-title"><%= @recipe.name %></h4>
             <div class="post-meta mb-50">
-              <a href="#" class="post-date"><%= @recipe.created_at %></a>
+              <a href="#" class="post-date"><%= @recipe.created_at.strftime("%d %b, %Y %H:%M") %></a>
             </div>
             <p>
               <%= @recipe.recipe %>
