@@ -5,10 +5,16 @@ RailsAdmin.config do |config|
   #     user.authenticate(password) if user
   #   end
   # end
-
+  config.authorize_with do |controller|
+    if current_user.nil?
+      redirect_to main_app.new_user_session_path
+    elsif !current_user.is_admin?
+      redirect_to main_app.home_path
+    end
+  end
   ### Popular gems integration
 
-  ## == Devise ==
+  # == Devise ==
   # config.authenticate_with do
   #   warden.authenticate! scope: :user
   # end
