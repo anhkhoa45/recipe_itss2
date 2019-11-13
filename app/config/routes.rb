@@ -6,7 +6,6 @@ Rails.application.routes.draw do
 
   # Authentication
   get 'admin', action: :index, controller: 'admins'
-
   post 'password/forgot', action: :forgot, controller: 'passwords'
   post 'password/reset', action: :reset, controller: 'passwords'
   get 'password/reset', action: :reset_new_password, controller: 'passwords'

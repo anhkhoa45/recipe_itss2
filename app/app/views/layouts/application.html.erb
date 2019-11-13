@@ -63,11 +63,12 @@
                     <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
                   </div>
                 </div>
-
-                <div class="col-lg-8 search-form d-flex align-items-center">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4 search-form d-flex align-items-center">
                   <form class="form full-width" action="/recipes" method="get">
                     <div class="input-group">
-                      <input class="form-control" type="search" id="topSearch" placeholder="Search for recipe, category, ingredient, ..." name="query">
+                      <input class="form-control" type="search" id="topSearch"
+                        placeholder="Search for recipe, category, ingredient, ..." name="query">
                     </div>
                   </form>
                 </div>
@@ -92,10 +93,10 @@
                   <div class="login-area">
                     <% if user_signed_in? %>
                       <%= link_to("Profile","/profile") %> 
-                      <%= link_to('Logout', destroy_user_session_path, method: :delete) %>   
-
+                      <%= link_to('Logout', destroy_user_session_path, method: :delete) %>
                     <% else %>
-                      <%= link_to("Login / Register","/users/sign_in") %>
+                    <%= link_to("Login / Register","/users/sign_in") %>
+
                     <% end %>
                   </div>
                 </div>
@@ -117,7 +118,8 @@
           <!-- Copywrite Text -->
           <p class="copywrite-text">
             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-            Copyright &copy;<script>
+            Copyright &copy;
+            <script>
               document.write(new Date().getFullYear());
 
             </script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i>
