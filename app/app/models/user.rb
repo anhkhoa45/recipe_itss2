@@ -13,4 +13,5 @@ class User < ApplicationRecord
   def is_premium?
     premium_purchases.active.exists?
   end
+  scope :activated, -> {where is_admin: true}
 end
