@@ -107,3 +107,8 @@ categories.each do |category|
     ])
   end
 end
+
+Admin.create(
+  email: 'test@example.com',
+  password: '123456'
+)
