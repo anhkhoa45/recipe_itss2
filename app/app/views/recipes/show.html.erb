@@ -166,7 +166,7 @@
     <div class="comment_area clearfix mb-100">
       <h4 class="mb-50">Comments</h4>
       <%= render 'comments/form' %>
-      <ol>
+      <ol id="cmt">
         <% @comments.each do |comment| %>
         <% replyCmtForm= "replyCmtForm"+ comment.id.to_s %>
         <% formCmtShow= "$('#" + replyCmtForm+ "').show()" %>
@@ -297,5 +297,24 @@
 
   </div>
   </div>
+  <script>
+    $('.new_comment').bind('ajax:success', function() {
+      var data = $('.new_comment textarea').val()
+      var html = '<li class="single_comment_area">'+
+                  '<div class="comment-content d-flex">'+
+                    '<div class="comment-author">'+
+                      '<img src="<%= current_user.avatar %>" alt="author">'+
+                    '</div>'+
+                  '<div class="comment-meta">'+
+                  '<div class="d-flex">'+
+                      '<a href="#" class="post-author"><%= current_user.username %></a>'+
+                      '<a href="#" class="post-date">Now</a>'+ 
+                      '<a href="#" class="post-date">Reply</a>'+
+                      '<a href="#" class="post-date">Edit</a>'+
+                      '<a href="#" class="reply">Delete</a>'+
+                '</div><p>'+data+'</p></div></div></li>'
+        $('#cmt').prepend(html)                      
+    });
+    </script>
 </section>
 <!-- ##### Post Details Area End ##### -->
