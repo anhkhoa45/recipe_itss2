@@ -298,8 +298,36 @@
   </div>
   </div>
   <script>
-    $('.new_comment').bind('ajax:success', function() {
+    $('.new_comment').bind('ajax:success', function(e) {
+      var id = e.detail[0]
+      var user_id = $('#reply_user_id').val()
+      
       var data = $('.new_comment textarea').val()
+      var edit= '<div id="comment'+id+'" style="display:none;" class="form-group">'+
+                '<form class="new_comment" id="new_comment" action="/comments/2" accept-charset="UTF-8" method="post">'+
+                '<input type="hidden" name="_method" value="put"><input type="hidden" name="authenticity_token" value="nTFS9Uy1ZlRVTGpOFPHHaGNk7Q/qfhmu53dxKA6fIKIevxZXWCIpWgEUpDhR+Eb0640tdBIXjRw9s/aNGQn9Yw==">'+
+                '<input value="'+id+'" type="hidden" name="comment[id]" id="comment_id">'+
+                '<input type="text" name="comment[content]" class="form-control" value="'+data+'">'+
+                '<div class="row">'+
+                  '<div class="col-6">'+
+                    '<button class="btn mt-30 pull-right" type="submit" style="background-color:#b0c364;color:#fff;">Update Comment</button>'+
+                  '</div>'+
+                  '<div class="col-6">'+
+                    '<button class="btn btn-default mt-30" type="button" onclick="$(\'#comment'+id+'\').hide()">Cancel</button>'+
+                  '</div>'+
+                '</div>'+
+                '</form></div>'
+      var reply = '<div id="replyCmtForm'+id+'" style="display:none;" class="form-group">'+
+                '<form class="new_reply" id="new_reply" action="/comments/reply" accept-charset="UTF-8" method="post">'+
+                '<input type="hidden" name="authenticity_token" value="Phy4pkg/TWfgH/yOudsbfaxckoXB3VK0n7mfOhA8bLO9kvwEXKgCabRHMvj80prhJLVS/jm0xgZFfRifB6qxcg==">'+
+                '<input value="'+id+'" type="hidden" name="reply[comment_id]" id="reply_comment_id">'+
+                '<input value="'+user_id+'" type="hidden" name="reply[user_id]" id="reply_user_id">'+
+                '<div class="col-12">'+
+                  '<textarea class="form-control rounded-0" cols="30" rows="5" placeholder="Your comment..." name="reply[content]" id="reply_content"></textarea>'+
+                '</div>'+
+                '<div class="col-12">'+
+                  '<button class="btn bueno-btn mt-30" type="submit">Submit Reply</button></div>'+
+                  '</form></div>'
       var html = '<li class="single_comment_area">'+
                   '<div class="comment-content d-flex">'+
                     '<% if user_signed_in? %>'+
@@ -312,11 +340,12 @@
                     '<% if user_signed_in? %>'+
                       '<a href="#" class="post-author"><%= current_user.username %></a>'+
                       '<% end %>'+
-                      '<a href="#" class="post-date">Now</a>'+ 
-                      '<a href="#" class="post-date">Reply</a>'+
-                      '<a href="#" class="post-date">Edit</a>'+
-                      '<a href="#" class="reply">Delete</a>'+
-                '</div><p>'+data+'</p></div></div></li>'
+                      '<a href="javascript:;" class="post-date">Now</a>'+ 
+                      '<a href="javascript:;"class="post-date" onclick="$(\'#replyCmtForm'+id+'\').show()">Reply</a>'+
+                      '<a href="javascript:;" class="post-date" onclick="$(\'#comment'+id+'\').show()">Edit</a>'+
+                      '<a data-confirm="Are you sure?" class="reply" rel="nofollow" data-method="delete" href="/comments/'+id+'">Delete</a>'+
+                '</div><p>'+data+'</p>'+edit+reply+'</div></div></li>'
+
         $('#cmt').prepend(html)                      
     });
     </script>

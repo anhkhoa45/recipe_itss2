@@ -13,7 +13,7 @@ class CommentsController < ApplicationController
     def create
         @comment= Comment.new(comment_params)
         @comment.save
-        redirect_to recipe_path(@comment.recipe_id)
+        render :json => @comment.id
     end
     
     def edit
