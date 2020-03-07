@@ -15,19 +15,8 @@
           <div class="blog-content">
             <a href="#" class="post-tag"><%= @recipe.category.name %></a>
             <h4 class="post-title"><%= @recipe.name %></h4>
-            By
-            <% if @recipe.is_premium? %>
-              <a href="/author?type=premium">
-                Gordon Ramsay
-              </a>
-            <% else %>
-              <a href="/author">
-                Christine Hà
-              </a>
-            <% end %>
-            <br><br>
-            <div class="post-meta mb-30">
-              <a href="#" class="post-date disabled"><%= I18n.l(@recipe.created_at) %></a>
+            <div class="post-meta mb-50">
+              <a href="#" class="post-date disabled"><%= @recipe.created_at.strftime("%d-%m-%Y") %></a>
             </div>
             <p>
               <%= @recipe.recipe %>
@@ -177,7 +166,7 @@
     <div class="comment_area clearfix mb-100">
       <h4 class="mb-50">Comments</h4>
       <%= render 'comments/form' %>
-      <ol>
+      <ol id="cmt">
         <% @comments.each do |comment| %>
         <% replyCmtForm= "replyCmtForm"+ comment.id.to_s %>
         <% formCmtShow= "$('#" + replyCmtForm+ "').show()" %>
@@ -193,7 +182,7 @@
             <div class="comment-meta">
               <div class="d-flex">
                 <a href="#" class="post-author"><%= comment.user.username %></a>
-                <a href="#" class="post-date"><%= I18n.l(comment.created_at) %></a>
+                <a href="#" class="post-date"><%= comment.created_at.strftime("%d-%m-%Y") %></a>
                 <% if user_signed_in? %>
                 <% if comment.user_id == current_user.id %>
                 <a href="#" class="post-date" onclick=<%= formCmtShow%>>Reply</a>
@@ -253,7 +242,7 @@
                 <div class="comment-meta">
                   <div class="d-flex">
                     <a href="#" class="post-author"><%= reply.user.username%></a>
-                    <a href="#" class="post-date"><%= reply.created_at.strftime("%d %b, %Y %H:%M")%></a>
+                    <a href="#" class="post-date"><%= reply.created_at.strftime("%d-%m-%Y")%></a>
                     <% if user_signed_in? %>
                     <% if reply.user_id == current_user.id %>
                     <a href="#" class="post-date" onclick=<%= formShow%>>Reply</a>
@@ -303,10 +292,63 @@
           <% end %>
         </li>
         <% end %>
+        <%= csrf_meta_tag %>
       </ol>
     </div>
 
   </div>
   </div>
+  <script>
+    $('.new_comment').bind('ajax:success', function(e) {
+      var id = e.detail[0]
+      var user_id = $('#reply_user_id').val()
+      var AUTH_TOKEN = $('meta[name=csrf-token]').attr('content');
+      var data = $('.new_comment textarea').val()
+      var edit= '<div id="comment'+id+'" style="display:none;" class="form-group">'+
+                '<form class="new_comment" id="new_comment" action="/comments/2" accept-charset="UTF-8" method="post">'+
+                '<input type="hidden" name="_method" value="put"><input type="hidden" name="authenticity_token" value="'+AUTH_TOKEN+'">'+
+                '<input value="'+id+'" type="hidden" name="comment[id]" id="comment_id">'+
+                '<input type="text" name="comment[content]" class="form-control" value="'+data+'">'+
+                '<div class="row">'+
+                  '<div class="col-6">'+
+                    '<button class="btn mt-30 pull-right" type="submit" style="background-color:#b0c364;color:#fff;">Update Comment</button>'+
+                  '</div>'+
+                  '<div class="col-6">'+
+                    '<button class="btn btn-default mt-30" type="button" onclick="$(\'#comment'+id+'\').hide()">Cancel</button>'+
+                  '</div>'+
+                '</div>'+
+                '</form></div>'
+      var reply = '<div id="replyCmtForm'+id+'" style="display:none;" class="form-group">'+
+                '<form class="new_reply" id="new_reply" action="/comments/reply" accept-charset="UTF-8" method="post">'+
+                '<input type="hidden" name="authenticity_token" value="'+AUTH_TOKEN+'">'+
+                '<input value="'+id+'" type="hidden" name="reply[comment_id]" id="reply_comment_id">'+
+                '<input value="'+user_id+'" type="hidden" name="reply[user_id]" id="reply_user_id">'+
+                '<div class="col-12">'+
+                  '<textarea class="form-control rounded-0" cols="30" rows="5" placeholder="Your comment..." name="reply[content]" id="reply_content"></textarea>'+
+                '</div>'+
+                '<div class="col-12">'+
+                  '<button class="btn bueno-btn mt-30" type="submit">Submit Reply</button></div>'+
+                  '</form></div>'
+      var html = '<li class="single_comment_area">'+
+                  '<div class="comment-content d-flex">'+
+                    '<% if user_signed_in? %>'+
+                    '<div class="comment-author">'+
+                      '<img src="<%= current_user.avatar %>" alt="author">'+
+                    '</div>'+
+                    '<% end %>'+
+                  '<div class="comment-meta">'+
+                  '<div class="d-flex">'+
+                    '<% if user_signed_in? %>'+
+                      '<a href="#" class="post-author"><%= current_user.username %></a>'+
+                      '<% end %>'+
+                      '<a href="javascript:;" class="post-date">Now</a>'+ 
+                      '<a href="javascript:;"class="post-date" onclick="$(\'#replyCmtForm'+id+'\').show()">Reply</a>'+
+                      '<a href="javascript:;" class="post-date" onclick="$(\'#comment'+id+'\').show()">Edit</a>'+
+                      '<a data-confirm="Are you sure?" class="reply" rel="nofollow" data-method="delete" href="/comments/'+id+'">Delete</a>'+
+                '</div><p>'+data+'</p>'+edit+reply+'</div></div></li>'
+
+        $('#cmt').prepend(html)                      
+    });
+    </script>
 </section>
 <!-- ##### Post Details Area End ##### -->
